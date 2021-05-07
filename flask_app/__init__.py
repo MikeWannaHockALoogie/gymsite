@@ -1,12 +1,14 @@
 
 
-
+import json
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
 from flask_mail import Mail
 
+with open('/etc/gymsite_config.json') as config_file:
+        config = json.load(config_file)
 
 # app quick start with database
 
@@ -15,7 +17,7 @@ app = Flask(__name__)
 # innit database file
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///gymsite.db'
 # set secret key for forms
-app.config['SECRET_KEY'] = 'fb68ae46928774f9f1dcb90fbb375d8fd0a57b69eb9e98823633a199775d7c73'
+app.config['SECRET_KEY'] = config.get('SECRET_KEY')
 # connect db to app
 db = SQLAlchemy(app)\
 # innit login manager
@@ -28,8 +30,8 @@ encrypt = Bcrypt(app)
 # innit Mail app
 app.config['MAIL_SERVER']= 'smtp.gmail.com'
 app.config['MAIL_PORT']= '465'
-app.config['MAIL_USERNAME']='RenegadeAthleticsCFT'
-app.config['MAIL_PASSWORD']= 'april188'
+app.config['MAIL_USERNAME']= config.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD']= config.get('MAIL_PASSWORD')
 app.config['MAIL_USE_TLS']=False
 app.config['MAIL_USE_SSL']=True
 mail = Mail(app)
