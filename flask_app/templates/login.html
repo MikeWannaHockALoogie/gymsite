@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class='shadow rounded w-50 pb-4 align-self-stretch '>
+    <form class='mw-50 mr-3' action='{{ url_for("login") }}' method='post'>
+        {{ form.hidden_tag() }}
+        <fieldset class=' mw-100 mr-3 pr-3'>
+            <legend>Login</legend>
+            <div class='form-item mw-50'>
+                {{ form.email.label ( class = 'pr-2 form-item') }}
+                {{ form.email (class = "form-input")}}
+            </div>
+            <div class='form-item'>
+                {{ form.password.label ( class = 'pr-2 form-item') }}
+                {{ form.password (class = "form-input")}}
+            </div>
+            <div class='form-item'>
+                {{ form.remember.label ( class = 'pr-2 form-item') }}
+                {{ form.remember (class = "form-input")}}
+            </div <div class='form-item'>
+            {{ form.submit ( class = 'btn rounded-pill bg-grad white') }}
+</div>
+</fieldset>
+</form>
+</div>
+<div class=' mt-4 pb-4 w-50 rounded shadow'>
+    <div class='d-inline'>
+        <h3 class='d-inline'> Not a Member yet? </h3>
+        <h3 class='d-inline'><a class='btn rounded-pill bg-grad white' href='{{ url_for("register") }}'>Sign Up Here</a>
+        </h3>
+    </div>
+    <div class='d-inline'>
+        <h5 class='d-inline'> Forgot Your Password? </h5>
+        <h3 class='d-inline'><a class='btn rounded-pill bg-grad white' href='{{ url_for("reset_request") }}'>Reset
+                Password</a></h3>
+    </div>
+</div>
+<div class=' mt-4 pb-4 w-50 rounded shadow'>
+    <h4> We recently updated the website. If you cannot log in, try reseting your password.</h4>
+    <h3><a class='btn rounded-pill bg-grad white' href='{{ url_for("reset_request") }}'>Reset Password</a></h3>
+</div>
+
+{% endblock %}

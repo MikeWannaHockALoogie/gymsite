@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class='container-fluid'>
+    <form action='{{ url_for("create_workout",) }}' method='post'>
+        {{ form.hidden_tag() }}
+        <fieldset>
+            <legend>workout</legend>
+            <div class='form-itm'>
+                {{ form.date.label ( class = 'form-item') }}
+                {{ form.date (class = "form-input")}}
+                {% if form.date.errors %}
+                <ul>
+                    {% for error in form.date.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {{ form.user.label ( class = 'form-item') }}
+                {{ form.user (class = "form-input")}}
+                {% if form.user.errors %}
+                <ul>
+                    {% for error in form.user.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+            </div>
+
+            <div class='form-itm'>
+                {{ form.submit ( class = 'btn white rounded-pill bg-grad form-submit') }}
+            </div>
+        </fieldset>
+    </form>
+</div>
+<div class='container-fluid d-inline-flex mt-4 workout shadow p-2 justify-content-center'>
+    <h3><a class='btn rounded-pill bg-grad white mr-5 px-4' href='{{ url_for("workouts") }}'>Save</a></h3>
+    <h3 class=''><a class='btn rounded-pill bg-danger' href='{{ url_for("workouts") }}'>Cancel</a></h3>
+</div>
+
+{% endblock %}

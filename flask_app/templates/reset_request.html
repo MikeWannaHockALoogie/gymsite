@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class='container-fluid shadow rounded pb-2 mt-4'>
+    <form class='mt-4' action=' {{ url_for("reset_request") }}' method='post'>
+        {{ form.hidden_tag() }}
+        <fieldset>
+            <legend>Forgot Your Password</legend>
+            <div class='form-item'>
+                {{ form.username.label ( class = 'form-item') }}
+                {{ form.username (class = "form-input")}}
+            </div>
+            <div class='form-item'>
+                {{ form.email.label ( class = 'form-item') }}
+                {{ form.email (class = "form-input")}}
+            </div>
+            <div class='form-item'>
+                {{ form.submit ( class = 'btn bg-grad white rounded-pill ml-3') }}
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+
+{% endblock %}

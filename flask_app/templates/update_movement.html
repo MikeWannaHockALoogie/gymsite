@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class='container-fluid rounded shadow pb-2'>
+    <form action='{{ url_for("update_movement", move_id = move.id) }}' method='post'>
+        {{ form.hidden_tag() }}
+        <fieldset>
+            <legend>Movement</legend>
+            <div class='form-item'>
+                {{ form.name.label ( class = 'form-item') }}
+                {{ form.name (class = "form-input")}}
+                {% if form.name.errors %}
+                <ul>
+                    {% for error in form.name.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class='form-item'>
+                {{ form.upper.label ( class = 'form-item') }}
+                {{ form.upper (class = "form-input")}}
+                {% if form.upper.errors %}
+                <ul>
+                    {% for error in form.upper.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class='form-item'>
+                {{ form.lower.label ( class = 'form-item') }}
+                {{ form.lower (class = "form-input")}}
+                {% if form.lower.errors %}
+                <ul>
+                    {% for error in form.lower.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class='form-item'>
+                {{ form.full.label ( class = 'form-item') }}
+                {{ form.full (class = "form-input")}}
+                {% if form.full.errors %}
+                <ul>
+                    {% for error in form.full.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class='form-item'>
+                {{ form.push.label ( class = 'form-item') }}
+                {{ form.push (class = "form-input")}}
+                {% if form.push.errors %}
+                <ul>
+                    {% for error in form.push.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class='form-item'>
+                {{ form.pull.label ( class = 'form-item') }}
+                {{ form.pull (class = "form-input")}}
+                {% if form.pull.errors %}
+                <ul>
+                    {% for error in form.pull.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class='form-item'>
+                {{ form.total.label ( class = 'form-item') }}
+                {{ form.total (class = "form-input")}}
+                {% if form.total.errors %}
+                <ul>
+                    {% for error in form.total.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class='form-item'>
+                {{ form.kind.label ( class = 'form-item') }}
+                {{ form.kind (class = "form-input")}}
+                {% if form.kind.errors %}
+                <ul>
+                    {% for error in form.kind.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+
+            <div class='form-item '>
+                {{ form.submit ( class = 'btn rounded-pill bg-grad white') }}
+            </div>
+        </fieldset>
+    </form>
+</div>
+<div class='mt-4 btn p-2 shadow rounded-pill bg-grad white justify-content-center'>
+    <h3><a class='justify-content-center' href='{{ url_for("workouts") }}'>Complete</a></h3>
+</div>
+
+
+{% endblock %}

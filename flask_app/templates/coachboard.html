@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class='container-fluid'>
+    {% for wod in workouts%}
+    <h4>{{wod.user}}</h4>
+    <a href='{{ url_for("workout_details", wod_id =wod.id) }}'>{{wod.date}}</a>
+
+    <div>
+        {% for comp in wod.components %}
+        {{comp.name}}<br>
+        {{comp.description}}
+        {% endfor %}
+    </div>
+    {% endfor %}
+
+</div>
+
+
+
+
+
+
+
+
+{% endblock %}

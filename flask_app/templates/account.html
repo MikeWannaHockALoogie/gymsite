@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class='container-fluid'>
+    <div class='media'>
+        <img class='rounded-circle account-img shadow' src='{{ image }}'>
+    </div>
+</div>
+<div class='container-fluid shadow rounded pb-2'>
+    <form class='' action=' {{ url_for("account") }}' method='post' , enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <fieldset>
+            <legend>Account Info</legend>
+            <div class='form-item '>
+                {{ form.name.label ( class = 'form-item') }}
+                {{ form.name (class = "form-input ")}}
+            </div>
+            <div class='form-item'>
+                {{ form.username.label ( class = 'form-item') }}
+                {{ form.username (class = "form-input")}}
+            </div>
+            <div class='form-item'>
+                {{ form.email.label ( class = 'form-item') }}
+                {{ form.email (class = "form-input")}}
+            </div>
+            <div class='form-item'>
+                {{ form.profile_pic.label() }}
+                {{ form.profile_pic(class='form-control-file') }}
+                {% if form.profile_pic.errors %}
+                {% for error in form.profile_pic.errors %}
+                <span class='text-danger'>{{ error }}</span>
+                {% endfor %}
+                {% endif %}
+            </div>
+
+
+            <div class='form-item'>
+                {{ form.submit ( class = 'btn bg-grad white rounded-pill') }}
+            </div>
+        </fieldset>
+    </form>
+</div>
+<div class='container-fluid card shadow rounded border mb-4 mt-4'>
+    {% if workout %}
+    <h1 class='card-title'><a href='{{ url_for("workout_details", wod_id = workout.id) }}'>{{ workout.date }}</a>
+    </h1>
+    {% for comp in workout.components %}
+    <h1 class='card-title'> <a href='{{ url_for("component_detail", comp_id =comp.id)}}'>{{ comp.name }}</a> </h1>
+    <p class='card-body'>{{ comp }}</p>
+    {% endfor %}
+    {% else %}
+    <h1 class=>REST DAY</h1>
+    {% endif %}
+
+</div>
+
+
+
+
+
+
+
+
+{% endblock %}

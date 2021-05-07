@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class='container-fluid'>
+    <h1>{{ component.name }}</h1>
+    <p>{{ component.description }}</p>
+    <ul>
+        {% for move in component.movements %}
+        <li>
+            {{ move }}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+<div class='container-fluid'>
+    <form action='{{ url_for("update_component", comp_id = component.id) }}' method='post'>
+        {{ form.hidden_tag() }}
+        <fieldset>
+            <legend>Component</legend>
+            <div class='form-itm'>
+                {{ form.name.label ( class = 'form-item') }}
+                {{ form.name (class = "form-input")}}
+                {% if form.name.errors %}
+                <ul>
+                    {% for error in form.name.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class='form-itm'>
+                {{ form.description.label ( class = 'form-item') }}
+                {{ form.description (class = "form-inupt")}}
+                {% if form.description.errors %}
+                <ul>
+                    {% for error in form.description.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class='form-itm'>
+                {{ form.is_test.label ( class = 'form-item') }}
+                {{ form.is_test (class = "form-input")}}
+                {% if form.is_test.errors %}
+                <ul>
+                    {% for error in form.is_test.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class='form-itm'>
+                {{ form.is_benchmark.label ( class = 'form-ietm') }}
+                {{ form.is_benchmark (class = "form-input") }}
+                {% if form.is_benchmark.errors %}
+                <ul>
+                    {% for error in form.is_benchmark.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class='form-itm'>
+                {{ form.movements.label ( class = 'form-item') }}
+                {{ form.movements (class = "form-inpt")}}
+                {% if form.movements.errors %}
+                {{ form.movements.data }}
+                <ul>
+                    {% for error in form.movements.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class='form-itm'>
+                {{ form.submit ( class = 'btn white rounded-pill bg-grad form-submit') }}
+            </div>
+        </fieldset>
+    </form>
+</div>
+<div class='container-fluid d-inline-flex mt-4 workout shadow p-2 justify-content-center'>
+    <h3><a class='btn rounded-pill bg-grad white mr-5 px-4' href='{{ url_for("workouts") }}'>Save</a></h3>
+</div>
+
+{% endblock %}

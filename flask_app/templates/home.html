@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+{% for wod in workouts %}
+
+<div class='container-fluid card shadow rounded border mb-4'>
+    <h1 class='card-title'><a href='{{ url_for("workout_details", wod_id = wod.id) }}'>{{ wod.date }}</a></h1>
+    {% for comp in wod.components %}
+    <h1 class='card-title'> <a href='{{ url_for("component_detail", comp_id =comp.id)}}'>{{ comp.name }}</a> </h1>
+    <p class='card-body'>{{ comp }}</p>
+    {% endfor %}
+</div>
+{% endfor %}
+
+
+{% endblock %}

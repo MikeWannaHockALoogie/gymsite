@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<a class='btn bg-grad rounded-pill shadow white mb-3 ml-2'
+    href='{{ url_for("workout_details", wod_id =component.wod_id) }}'>BACK</a>
+{% if current_user.is_admin %}
+<a class='btn bg-grad rounded-pill shadow white mb-3 ml-2'
+    href='{{ url_for("update_component", comp_id = component.id) }}'>Update</a>
+<a class='btn bg-danger rounded-pill shadow mb-4 ml-2'
+    href='{{ url_for("delete_component", comp_id = component.id) }}'>Delete
+    Component</a>
+{% endif %}
+
+<div class='container-fluid mb-4 shadow pb-4 rounded'>
+    <h1 class='component-title'>{{ component.name }}</h1>
+    <p class='component-body'>{{ component }}</p>
+    <form action='{{ url_for("component_detail", comp_id = component.id) }}' method='post'>
+
+        {{ form.hidden_tag() }}
+        {% if component.score_type == 'time'%}
+        <fieldset>
+            <div class='form-item mb-3'>
+                {{ form.minutes.label ( class = 'form-item') }}
+                {{ form.minutes (class = "form-inpt")}}
+            </div>
+            <div class='form-item mb-3'>
+                {{ form.seconds.label ( class = 'form-item') }}
+                {{ form.seconds (class = "form-inpt")}}
+            </div>
+            <div class='form-item '>
+                {{ form.score_type.label ( class = 'form-item')}}
+                {{ form.score_type (class = "form-input")}}
+            </div>
+            <div class='form-item '>
+                {{ form.notes.label ( class = 'form-item')}}
+                {{ form.notes (class = "form-input")}}
+            </div>
+            <div class='form-itm rounded-pill'>
+                {{ form.submit ( class = 'btn bg-grad white shadow rounded-pill') }}
+            </div>
+        </fieldset>
+        {% else %}
+        <fieldset>
+            <div class='form-item mb-3'>
+                {{ form.score.label ( class = 'form-item') }}
+                {{ form.score (class = "form-inpt")}}
+            </div>
+            <div class='form-item '>
+                {{ form.score_type.label ( class = 'form-item')}}
+                {{ form.score_type (class = "form-input")}}
+            </div>
+            <div class='form-item '>
+                {{ form.notes.label ( class = 'form-item')}}
+                {{ form.notes (class = "form-input")}}
+            </div>
+            <div class='form-itm rounded-pill'>
+                {{ form.submit ( class = 'btn bg-grad white shadow rounded-pill') }}
+            </div>
+        </fieldset>
+        {% endif %}
+</div>
+
+
+<div class='container mb-4 shadow p-4 rounded w-auto'>
+    {% if not component_scores %}
+    <table class='container-fluid table  rounded'>
+
+        <tr>
+            <th scope='col'>Date</th>
+            <th scope='col'>Movement</th>
+            <th scope='col'>Score</th>
+            <th scope='col'>Notes</th>
+
+        </tr>
+        <tr>
+            <td>No</td>
+            <td>SCORE</td>
+            <td>YET</td>
+        </tr>
+    </table>
+
+
+    {% else %}
+    {% if component.is_test %}
+    <table class='container-fluid table  rounded'>
+        {% for move, scores in component_scores.items() %}
+
+        <tr>
+            <th scope='col'>Date</th>
+            <th scope='col'>Movement</th>
+            <th scope='col'>Score</th>
+            <th scope='col'>Notes</th>
+            <th scope='col'></th>
+        </tr>
+        {% for score in scores %}
+        <tr>
+            {% if score['date'] %}
+            <td>{{score['date']}}</td>
+            {% else %}
+            <td></td>
+            {% endif %}
+            <td>{{ move }}: </td>
+            <td> {{ score['total'] }} {{ score['type'] }}</td>
+            <td>{{ score['notes']}}</td>
+            <td><button><a
+                        href="{{ url_for('delete_test_score',score_id = score['id'], comp_id = component.id  ) }}">Delete
+                        Score</a></button></td>
+        </tr>
+        {% endfor %}
+        {% endfor %}
+    </table>
+
+
+
+    {% else %}
+
+
+    <table class='container-fluid table rounded'>
+
+        <tr>
+            <th scope='col'>Date</th>
+            <th scope='col'>Movement</th>
+            <th scope='col'>Score</th>
+            <th scope='col'>Notes</th>
+
+        </tr>
+        {% for move, score in component_scores.items() %}
+        {% for s in score %}
+        <tr>
+            {% if score['date'] %}
+            <td>{{score['date']}}</td>
+            {% else %}
+            <td></td>
+            {% endif %}
+            <td>{{ move }}: </td>
+            <td> {{ s['metcon'] }} {{ s['type'] }}</td>
+            <td>{{ score['notes']}}</td>
+
+        </tr>
+        {% endfor %}
+        {% endfor %}
+    </table>
+
+
+    {% endif %}
+</div>
+{% endif %}
+
+
+
+{% endblock %}
