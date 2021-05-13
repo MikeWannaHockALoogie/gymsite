@@ -94,7 +94,7 @@ class ScoreComponents(FlaskForm):
 
 
 class CreateWorkout(FlaskForm):
-    date = DateField("Date", default=datetime.today().date())
+    date = DateField("Date", default=datetime.today().date)
     user = SelectField(
         "Athlete",
         choices=[
@@ -168,3 +168,11 @@ class AccountUpdate(FlaskForm):
     email = StringField("username", validators=[Email()])
     profile_pic = FileField("Update Profile Pic")
     submit = SubmitField("update")
+
+class AddTestScore(FlaskForm):
+    move = SelectField('Movement',choices=[(movement.id, movement)for movement in Movements.query.order_by(Movements.name).all()], validators = [DataRequired()])
+    score = IntegerField('Score', validators = [DataRequired()])
+    score_type = SelectField("Type", choices=[("reps", "reps"), ("lbs", "lbs"), ("time", "time")])
+    date = DateField("Date", default=datetime.today().date)
+    notes = TextAreaField('Notes')
+    submit = SubmitField('Submit')

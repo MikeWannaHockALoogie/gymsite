@@ -20,6 +20,7 @@ from flask_app.forms import (
     UpdateMovement,
     AccountUpdate,
     ScoreTimeComponenets,
+    AddTestScore,
 )
 from flask_app.helpers import send_reset_email, save_pic
 from flask_bcrypt import generate_password_hash
@@ -65,18 +66,13 @@ def workout_details(wod_id):
     component_scores = {}
     # iterate through each of the days components
     for comp in components:
-        print(comp.id)
-        print(GeneralScores.query.filter_by(component_id=comp.id).all())
         # iterate through each movement in each component
         scores = GeneralScores.query.filter_by(component_id=comp.id).all()
         count = 0
         for score in scores:
             count += 1
-            print(count)
-            print(score.user_id)
             if score:
                 user = Users.query.get(score.user_id)
-                print(user, "score_user_id")
                 c = Components.query.get(score.component_id)
                 if user not in component_scores.keys():
                     component_scores[user] = [
@@ -102,8 +98,6 @@ def workout_details(wod_id):
                         }
                     )
                 s = GeneralScores.query.get(component_scores[user][-1]["s_id"])
-                print(s.user_id, "<--")
-                print(score.user_id)
 
     return render_template(
         "workout_details.html",
@@ -113,7 +107,7 @@ def workout_details(wod_id):
         component_scores=component_scores,
     )
 
-
+@app.route("/delete/test/<score_id>", defaults = {'comp_id':None})
 @app.route("/delete/test/<score_id>/<comp_id>", methods=["post", "get"])
 @login_required
 def delete_test_score(score_id, comp_id):
@@ -122,9 +116,11 @@ def delete_test_score(score_id, comp_id):
         db.session.delete(score)
         db.session.commit()
         flash("score was deleted")
-        return redirect(url_for("component_detail", comp_id=comp_id))
     else:
         flash("score was not deleted")
+    if comp_id == None:
+        return redirect(url_for('user_test_scores'))
+    else:
         return redirect(url_for("component_detail", comp_id=comp_id))
 
 
@@ -181,7 +177,6 @@ def component_detail(comp_id):
 
         if comp.is_test:
             move = component.movements[0]
-            print("test: ", move, move.id)
             test_score = UserTestScores(
                 move_id=move.move_id,
                 user_id=current_user.id,
@@ -653,7 +648,7 @@ def coachboard_detail(user_id, comp_id):
         flash("Workout Scored!")
         return redirect(url_for("workout_details", wod_id=wod.id))
 
-@app.route('/generateWod/<ath_id>/<num_moves>/<type>')
+@app.route('/generateWod/<ath_id>/<num_moves>')
 def generate_workout(ath_id,num_moves):
     ath = Users.query.get(ath_id)
     # get all workouts and sort
@@ -675,8 +670,47 @@ def generate_workout(ath_id,num_moves):
     move_exclude  =comp_moves
     # create workout from list of movements excluding movements in the exclude list. 
     move_select = set()
-    for i in range(num_moves):
+    for i in range(int(num_moves)):
         move = random.choice(Movements.query.all())
         move_select.add(move)
-    print(move_select)
-    return f'{[x for x in move_select]}'
+    print(list(move_select))
+    scores = [(Movements.query.get(move.move_id), move.score, move.score_type )  for move in UserTestScores.query.filter(UserTestScores.user_id == ath.id).all() ]
+    wod = [x for x in scores if x[0] in move_select]
+    print(wod)
+    workout= {m:{'reps':0,'weight':0} for m in move_select}
+    for m in wod:
+        workout[m[0]][m[2]] = m[1]
+    print(workout)
+    description = ''
+    for i in workout.keys():
+        description += f'{i} {workout[i]["reps"]//5} reps {(workout[i]["weight"]*.6)//1} lbs \n'
+    return f'<p style = "white-space: pre;">{ description }<p>'
+
+@app.route('/testscores', methods = ['post','get'])
+def user_test_scores():
+    user = current_user
+    user_move_scores = list()
+    scores = UserTestScores.query.filter(UserTestScores.user_id ==user.id).order_by(UserTestScores.move_id).all()
+    #scores.sort(key = lambda x:Movements.query.get(x.move_id).name)
+    for score in scores:
+        user_move_scores.append({1:score.id,'name':Movements.query.get(score.move_id),'score type':score.score_type, 'score':score.score, 'date':score.test_day, 'notes':score.notes})
+    
+    form = AddTestScore()
+    if form.is_submitted():
+        move = form.move.data
+        print(move)
+        m = Movements.query.get(move)
+        new_score = UserTestScores(
+            move_id = move,
+            user_id = current_user.id,
+            score = form.score.data,
+            score_type = form.score_type.data,
+            notes =form.notes.data,
+            test_day = form.date.data
+
+        )
+        db.session.add(new_score)
+        db.session.commit()
+        flash('score added')
+        return redirect('testscores')
+    return render_template('test_scores.html', scores = user_move_scores, form = form)
