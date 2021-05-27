@@ -95,13 +95,13 @@ class ScoreComponents(FlaskForm):
 
 class CreateWorkout(FlaskForm):
     date = DateField("Date", default=datetime.today().date)
-    user = SelectField(
-        "Athlete",
-        choices=[
+    user = SelectField("Athlete")
+    def __init__(self, *args, **kwargs):
+        super(CreateWorkout, self).__init__(*args, **kwargs)
+        self.user.choices = [
             (int(athlete.id), (athlete.username, athlete.id))
             for athlete in Users.query.all()
-        ],
-    )
+        ]
     submit = SubmitField("Submit")
 
 
