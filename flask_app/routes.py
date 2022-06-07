@@ -361,16 +361,16 @@ def account():
 def upcoming_workouts():
     user = current_user
     workouts = (
-        Workouts.query.filter(func.date(Workouts.date) >= (datetime.utcnow().date()))
+        Workouts.query.filter(func.date(Workouts.date) >= (datetime.utcnow().date() and UserWorkouts.user_id == user.id))
         .order_by(Workouts.date)
         .limit(10)
     )
     month = datetime.utcnow().strftime("%B")
     workouts = UserWorkouts.query.filter(UserWorkouts.user_id == user.id).all()
     wods = [Workouts.query.get(wod.wod_id) for wod in workouts]
-    print(wods)
+    next_wods = [wod for wod in wods if wod.date >= datetime.utcnow()]
     return render_template(
-        "upcoming_workouts.html", title="Upcoming Workouts", workouts=wods, month=month,
+        "upcoming_workouts.html", title="Upcoming Workouts", workouts=next_wods, month=month,
     )
 
 
@@ -492,8 +492,6 @@ def create_component(wod_id):
         for move in form.movements.data:
             for movement in Movements.query.all():
                 if movement.name == move:
-                    print(movement)
-                    print(movement.id)
                     m = ComponentMovements(
                         move_id=movement.id, component_id=component.id
                     )
@@ -684,7 +682,7 @@ def generate_workout(ath_id,num_moves):
     description = ''
     for i in workout.keys():
         description += f'{i} {workout[i]["reps"]//5} reps {(workout[i]["weight"]*.6)//1} lbs \n'
-    return f'<p style = "white-space: pre;">{ description }<p>'
+    return render_template('generate_wod.html',description = description, movements = move_select, ath = ath)
 
 @app.route('/testscores', methods = ['post','get'])
 def user_test_scores():
@@ -714,3 +712,17 @@ def user_test_scores():
         flash('score added')
         return redirect('testscores')
     return render_template('test_scores.html', scores = user_move_scores, form = form)
+
+@app.route('/genwod/<movements>/<description>/<ath>')
+def rnd_wod(movements, description, ath):
+    wod = Workouts(date = datetime.today().date)
+    db.session.add(wod)
+    user_wod = UserWorkouts(wod_id = wod.id, user_id = ath.id)
+    db.session.add(user_wod)
+    component = Components(wod_id = wod.id, name = f'{datetime.today().date}', description = description)
+    db.session.add(component)
+    for move in movements : 
+        m = ComponentMovements(move_id = move.id,component_id =component.id )
+        db.session.add(m)
+    db.session.commit()
+    return redirect(url_for('/workouts'))
